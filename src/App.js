@@ -16,8 +16,8 @@ function App() {
       <Routes>
         <Route path={`${homeUrl}/signup`} element={<SignUp />}></Route>
         <Route path={`${homeUrl}/login`} element={<Login />}></Route>
+        <Route path={`${homeUrl}/task_edit/:id`} element={<TaskEdit />}></Route>
         <Route path={`${homeUrl}/`} element={<Home />}></Route>
-        <Route path={`${homeUrl}/task_edit`} element={<TaskEdit />}></Route>
         <Route path="*" element={<NotFound />}></Route>
       </Routes>
     </ChakraProvider>

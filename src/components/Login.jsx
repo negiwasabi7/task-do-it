@@ -18,6 +18,7 @@ const Login = () => {
     if (error) {
       console.log('===ERROR===');
       console.log(error);
+      setErrorMessage(error.message);
     } else {
       console.log('===SIGNIN OK===');
       console.log(data);

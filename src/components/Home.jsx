@@ -1,10 +1,13 @@
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { Box, HStack, IconButton } from '@chakra-ui/react';
 import React from 'react';
 import { supabase } from '../api/supabaseClient';
 import { useQuery } from 'react-query';
+import TaskItem from './TaskItem';
+import { useNavigate } from 'react-router-dom';
+
+const homeUrl = process.env.PUBLIC_URL;
 
 const Home = () => {
+  const navigate = useNavigate();
   const fetchTasks = async () => {
     const { data, error } = await supabase.from('tasks').select();
     if (error) {
@@ -14,6 +17,10 @@ const Home = () => {
   };
 
   const { isLoading, error, data: taskList } = useQuery('tasks', fetchTasks);
+
+  const onEditButtonClick = (task_id) => {
+    navigate(`${homeUrl}/task_edit/${task_id}`);
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -26,11 +33,7 @@ const Home = () => {
   return (
     <>
       {taskList.map((task) => (
-        <HStack>
-          <Box p={4}>{task.title}</Box>
-          <IconButton icon={<EditIcon />} />
-          <IconButton icon={<DeleteIcon />} />
-        </HStack>
+        <TaskItem key={task.id} task={task} onEditButtonClick={onEditButtonClick} />
       ))}
     </>
   );
