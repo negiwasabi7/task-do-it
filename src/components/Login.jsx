@@ -2,12 +2,15 @@ import { Button, Center, Flex, FormControl, FormLabel, Input, Stack, Text } from
 import React, { useState } from 'react';
 import { supabase } from '../api/supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { userState } from '../store/state';
 
 const homeUrl = process.env.PUBLIC_URL;
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password1, setPassword1] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [user, setUser] = useRecoilState(userState);
   const navigate = useNavigate();
 
   const signin = async (email, password) => {
@@ -22,6 +25,7 @@ const Login = () => {
     } else {
       console.log('===SIGNIN OK===');
       console.log(data);
+      setUser(data.user);
       navigate(`${homeUrl}/`);
     }
   };

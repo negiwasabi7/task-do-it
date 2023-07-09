@@ -28,6 +28,11 @@ https://reffect.co.jp/react/react-router-6/
 
 https://www.robinwieruch.de/react-router-private-routes/
 
+## recoil
+
+https://recoiljs.org/
+npm install recoil
+
 ## データベース
 
 ```SQL
