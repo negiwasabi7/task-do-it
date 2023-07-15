@@ -42,7 +42,10 @@ const TaskEdit = () => {
   };
 
   const updateTask = async () => {
-    const { error } = await supabase.from('tasks').update({ title, content }).eq('id', task_id);
+    const { error } = await supabase
+      .from('tasks')
+      .update({ title, content, updated_at: new Date().toISOString() })
+      .eq('id', task_id);
   };
 
   useEffect(() => {

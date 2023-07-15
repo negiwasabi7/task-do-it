@@ -9,7 +9,10 @@ const homeUrl = process.env.PUBLIC_URL;
 const Home = () => {
   const navigate = useNavigate();
   const fetchTasks = async () => {
-    const { data, error } = await supabase.from('tasks').select();
+    const { data, error } = await supabase
+      .from('tasks')
+      .select()
+      .order('updated_at', { ascending: false });
     if (error) {
       throw new Error(error.message);
     }
