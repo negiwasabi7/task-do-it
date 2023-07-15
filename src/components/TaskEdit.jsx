@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/state';
 import { supabase } from '../api/supabaseClient';
@@ -14,12 +14,15 @@ import {
 } from '@chakra-ui/react';
 import { Stack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import { useMutation } from 'react-query';
 
 const TaskEdit = () => {
   const user = useRecoilValue(userState);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const { task_id } = useParams();
+  const navigate = useNavigate();
+  const homeUrl = process.env.PUBLIC_URL;
   console.log(task_id);
   console.log(user.email);
 
@@ -41,12 +44,21 @@ const TaskEdit = () => {
     }
   };
 
-  const updateTask = async () => {
+  const updateTask = async (task) => {
     const { error } = await supabase
       .from('tasks')
-      .update({ title, content, updated_at: new Date().toISOString() })
+      .update({ title: task.title, content: task.content, updated_at: new Date().toISOString() })
       .eq('id', task_id);
   };
+
+  const mutation = useMutation(updateTask, {
+    onSuccess: () => {
+      navigate(`${homeUrl}/`);
+    },
+    onError: () => {
+      console.log('mutation error');
+    },
+  });
 
   useEffect(() => {
     fetchTask();
@@ -54,7 +66,7 @@ const TaskEdit = () => {
 
   const onSubmit = (event) => {
     event.preventDefault(); //ブラウザのデフォルトの動作を抑制する
-    updateTask();
+    mutation.mutate({ title, content });
   };
 
   return (
