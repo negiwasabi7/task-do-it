@@ -5,7 +5,7 @@ import { Button, Center, Flex, FormControl, FormLabel, Input } from '@chakra-ui/
 import { Stack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { fetchTask, updateTask } from '../service/taskService';
+import { fetchTask, saveTask } from '../service/taskService';
 
 const TaskEdit = () => {
   const user = useRecoilValue(userState);
@@ -19,7 +19,7 @@ const TaskEdit = () => {
 
   const { isLoading, error, data: task } = useQuery(['task', task_id], () => fetchTask(task_id));
 
-  const mutation = useMutation(updateTask, {
+  const mutation = useMutation(saveTask, {
     onSuccess: () => {
       navigate(`${homeUrl}/`);
     },
@@ -39,6 +39,7 @@ const TaskEdit = () => {
 
   const onSubmit = (event) => {
     event.preventDefault(); //ブラウザのデフォルトの動作を抑制する
+
     mutation.mutate({ task_id, task: { title, content } });
   };
 

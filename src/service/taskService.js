@@ -21,8 +21,37 @@ export const updateTask = async ({ task_id, task }) => {
   }
   return data;
 };
+export const saveTask = async ({ task_id, task }) => {
+  let result;
+
+  if (task_id) {
+    result = await supabase
+      .from('tasks')
+      .update({ ...task, updated_at: new Date().toISOString() })
+      .eq('id', task_id);
+  } else {
+    result = await supabase.from('tasks').insert({ ...task });
+  }
+
+  const { data, error } = result;
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+};
+
+export const insertTask = async (task) => {
+  const { data, error } = await supabase.from('tasks').insert({ ...task });
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+};
 
 export const fetchTask = async (task_id) => {
+  if (!task_id) {
+    return null;
+  }
   const { data, error } = await supabase.from('tasks').select().eq('id', task_id).single();
   if (error) {
     throw new Error(error.message);

@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import TaskItem from './TaskItem';
 import { useNavigate } from 'react-router-dom';
 import { fetchTasks } from '../service/taskService';
+import { Box, Button, Center, HStack, Stack, VStack } from '@chakra-ui/react';
 
 const homeUrl = process.env.PUBLIC_URL;
 
@@ -25,9 +26,14 @@ const Home = () => {
 
   return (
     <>
-      {taskList.map((task) => (
-        <TaskItem key={task.id} task={task} onEditButtonClick={onEditButtonClick} />
-      ))}
+      <VStack>
+        <Button onClick={() => navigate(`${homeUrl}/task_edit/new`)}>タスク追加</Button>
+        <Box>
+          {taskList.map((task) => (
+            <TaskItem key={task.id} task={task} onEditButtonClick={onEditButtonClick} />
+          ))}
+        </Box>
+      </VStack>
     </>
   );
 };

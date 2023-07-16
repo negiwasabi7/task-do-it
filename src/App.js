@@ -29,6 +29,7 @@ function App() {
         <Route element={<ProtectedRoute user={user} />}>
           <Route path={`${homeUrl}/`} element={<Home />}></Route>
           <Route path={`${homeUrl}/task_edit/:task_id`} element={<TaskEdit />}></Route>
+          <Route path={`${homeUrl}/task_edit/new`} element={<TaskEdit />}></Route>
         </Route>
         <Route path="*" element={<NotFound />}></Route>
       </Routes>
