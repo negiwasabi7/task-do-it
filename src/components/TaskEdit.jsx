@@ -1,17 +1,8 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/state';
-import { supabase } from '../api/supabaseClient';
-import {
-  Button,
-  Center,
-  Checkbox,
-  Flex,
-  FormControl,
-  FormLabel,
-  HStack,
-  Input,
-} from '@chakra-ui/react';
+import { supabase } from '../service/supabaseClient';
+import { Button, Center, Flex, FormControl, FormLabel, Input } from '@chakra-ui/react';
 import { Stack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
@@ -44,10 +35,10 @@ const TaskEdit = () => {
     }
   };
 
-  const updateTask = async (task) => {
+  const updateTask = async ({ task_id, task }) => {
     const { error } = await supabase
       .from('tasks')
-      .update({ title: task.title, content: task.content, updated_at: new Date().toISOString() })
+      .update({ ...task, updated_at: new Date().toISOString() })
       .eq('id', task_id);
   };
 
@@ -66,7 +57,7 @@ const TaskEdit = () => {
 
   const onSubmit = (event) => {
     event.preventDefault(); //ブラウザのデフォルトの動作を抑制する
-    mutation.mutate({ title, content });
+    mutation.mutate({ task_id, task: { title, content } });
   };
 
   return (

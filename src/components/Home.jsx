@@ -1,5 +1,5 @@
 import React from 'react';
-import { supabase } from '../api/supabaseClient';
+import { supabase } from '../service/supabaseClient';
 import { useQuery } from 'react-query';
 import TaskItem from './TaskItem';
 import { useNavigate } from 'react-router-dom';

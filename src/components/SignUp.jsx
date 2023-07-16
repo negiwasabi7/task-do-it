@@ -1,6 +1,6 @@
 import { Button, Center, Flex, FormControl, FormLabel, Input, Stack, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { supabase } from '../api/supabaseClient';
+import { supabase } from '../service/supabaseClient';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');

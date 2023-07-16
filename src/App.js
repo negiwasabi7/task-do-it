@@ -7,7 +7,7 @@ import Login from './components/Login';
 import TaskEdit from './components/TaskEdit';
 import NotFound from './components/NotFound';
 import Home from './components/Home';
-import { RecoilRoot, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { userState } from './store/state';
 
 const homeUrl = process.env.PUBLIC_URL;
