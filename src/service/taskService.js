@@ -12,19 +12,20 @@ export const fetchTasks = async () => {
 };
 
 export const updateTask = async ({ task_id, task }) => {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('tasks')
     .update({ ...task, updated_at: new Date().toISOString() })
     .eq('id', task_id);
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
 };
 
 export const fetchTask = async (task_id) => {
   const { data, error } = await supabase.from('tasks').select().eq('id', task_id).single();
-  if (!error) {
-    console.log('=== fetchTask ===');
-  } else {
-    console.log(error.message);
+  if (error) {
+    throw new Error(error.message);
   }
-
   return data;
 };
