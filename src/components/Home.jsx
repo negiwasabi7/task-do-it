@@ -13,24 +13,21 @@ const Home = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
 
-  const {
-    isLoading,
-    error,
-    data: taskList,
-  } = useQuery(['tasks', user.id], () => fetchTasks(user.id));
+  const tasksQuery = useQuery(['tasks', user.id], () => fetchTasks(user.id));
 
   const onEditButtonClick = (task_id) => {
     navigate(`${homeUrl}/task_edit/${task_id}`);
   };
 
-  if (isLoading) {
+  if (tasksQuery.isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
+  if (tasksQuery.error) {
+    return <div>Error: {tasksQuery.error.message}</div>;
   }
 
+  const taskList = tasksQuery.data;
   return (
     <>
       <VStack>

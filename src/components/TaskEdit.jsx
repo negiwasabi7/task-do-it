@@ -49,7 +49,7 @@ const TaskEdit = () => {
   console.log(task_id);
   console.log(user.email);
 
-  const { isLoading, error, data: task } = useQuery(['task', task_id], () => fetchTask(task_id));
+  const taskQuery = useQuery(['task', task_id], () => fetchTask(task_id));
 
   const mutation = useMutation(saveTask, {
     onSuccess: () => {
@@ -61,13 +61,14 @@ const TaskEdit = () => {
   });
 
   useEffect(() => {
+    const task = taskQuery.data;
     console.log('==== useEffect ===');
     console.log(task);
     if (task) {
       setTitle(task.title);
       setContent(task.content);
     }
-  }, [task]);
+  }, [taskQuery.data]);
 
   const onSubmit = (event) => {
     event.preventDefault(); //ブラウザのデフォルトの動作を抑制する
@@ -87,12 +88,12 @@ const TaskEdit = () => {
     setTodos(newTodos);
   };
 
-  if (isLoading) {
+  if (taskQuery.isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
+  if (taskQuery.error) {
+    return <div>Error: {taskQuery.error.message}</div>;
   }
 
   return (
