@@ -17,32 +17,14 @@ import { Stack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { fetchTask, saveTask } from '../service/taskService';
+import { fetchTodos } from '../service/todoService';
 
 const TaskEdit = () => {
   const user = useRecoilValue(userState);
   const user_id = user.id;
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [todos, setTodos] = useState([
-    {
-      id: 1,
-      done: false,
-      content: 'TODO #001',
-      todo_order: 1,
-    },
-    {
-      id: 2,
-      done: false,
-      content: 'TODO #002',
-      todo_order: 3,
-    },
-    {
-      id: 3,
-      done: false,
-      content: 'TODO #003',
-      todo_order: 4,
-    },
-  ]);
+  const [todoList, setTodoList] = useState([]);
   const { task_id } = useParams();
   const navigate = useNavigate();
   const homeUrl = process.env.PUBLIC_URL;
@@ -50,6 +32,7 @@ const TaskEdit = () => {
   console.log(user.email);
 
   const taskQuery = useQuery(['task', task_id], () => fetchTask(task_id));
+  const todosQuery = useQuery(['todoList', task_id], () => fetchTodos(task_id));
 
   const mutation = useMutation(saveTask, {
     onSuccess: () => {
@@ -70,10 +53,17 @@ const TaskEdit = () => {
     }
   }, [taskQuery.data]);
 
+  useEffect(() => {
+    const todos = todosQuery.data;
+    if (todos) {
+      setTodoList(todos);
+    }
+  }, [todosQuery.data]);
+
   const onSubmit = (event) => {
     event.preventDefault(); //ブラウザのデフォルトの動作を抑制する
 
-    console.log(todos);
+    console.log(todoList);
     mutation.mutate({ user_id, task_id, task: { title, content } });
   };
 
@@ -84,8 +74,8 @@ const TaskEdit = () => {
       content: '',
       todo_order: 1,
     };
-    const newTodos = [...todos, newTodo];
-    setTodos(newTodos);
+    const newTodos = [...todoList, newTodo];
+    setTodoList(newTodos);
   };
 
   if (taskQuery.isLoading) {
@@ -93,7 +83,12 @@ const TaskEdit = () => {
   }
 
   if (taskQuery.error) {
-    return <div>Error: {taskQuery.error.message}</div>;
+    console.error(taskQuery.error);
+    return <div>Error(taskQuery): {taskQuery.error}</div>;
+  }
+  if (todosQuery.error) {
+    console.error(todosQuery.error);
+    return <div>Error(todosQuery): {taskQuery.error}</div>;
   }
 
   return (
@@ -130,25 +125,25 @@ const TaskEdit = () => {
           </Center>
           <VStack>
             <Box>
-              {todos.map((todo, index) => (
+              {todoList.map((todo, index) => (
                 <HStack>
                   <Checkbox
-                    isChecked={todos[index].done}
+                    isChecked={todoList[index].done}
                     onChange={(event) => {
-                      const newTodos = [...todos];
+                      const newTodos = [...todoList];
                       newTodos[index].done = event.target.checked;
-                      setTodos(newTodos);
+                      setTodoList(newTodos);
                     }}
                   ></Checkbox>
                   <Input
                     type="text"
                     width="30ch"
                     size="md"
-                    value={todos[index].content}
+                    value={todoList[index].content}
                     onChange={(event) => {
-                      const newTodos = [...todos];
+                      const newTodos = [...todoList];
                       newTodos[index].content = event.target.value;
-                      setTodos(newTodos);
+                      setTodoList(newTodos);
                     }}
                   />
                 </HStack>
