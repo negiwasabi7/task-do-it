@@ -1,9 +1,10 @@
 import { supabase } from './supabaseClient';
 
-export const fetchTasks = async () => {
+export const fetchTasks = async (user_id) => {
   const { data, error } = await supabase
     .from('tasks')
     .select()
+    .eq('user_id', user_id)
     .order('updated_at', { ascending: false });
   if (error) {
     throw new Error(error.message);
@@ -21,7 +22,7 @@ export const updateTask = async ({ task_id, task }) => {
   }
   return data;
 };
-export const saveTask = async ({ task_id, task }) => {
+export const saveTask = async ({ user_id, task_id, task }) => {
   let result;
 
   if (task_id) {
@@ -30,7 +31,7 @@ export const saveTask = async ({ task_id, task }) => {
       .update({ ...task, updated_at: new Date().toISOString() })
       .eq('id', task_id);
   } else {
-    result = await supabase.from('tasks').insert({ ...task });
+    result = await supabase.from('tasks').insert({ user_id, ...task });
   }
 
   const { data, error } = result;

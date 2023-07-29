@@ -17,10 +17,10 @@ import { Stack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { fetchTask, saveTask } from '../service/taskService';
-import TodoItem from './TodoItem';
 
 const TaskEdit = () => {
   const user = useRecoilValue(userState);
+  const user_id = user.id;
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [todos, setTodos] = useState([
@@ -73,7 +73,7 @@ const TaskEdit = () => {
     event.preventDefault(); //ブラウザのデフォルトの動作を抑制する
 
     console.log(todos);
-    mutation.mutate({ task_id, task: { title, content } });
+    mutation.mutate({ user_id, task_id, task: { title, content } });
   };
 
   const onAddTodoClick = () => {

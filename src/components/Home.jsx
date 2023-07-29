@@ -4,13 +4,20 @@ import TaskItem from './TaskItem';
 import { useNavigate } from 'react-router-dom';
 import { fetchTasks } from '../service/taskService';
 import { Box, Button, Center, HStack, Stack, VStack } from '@chakra-ui/react';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../store/state';
 
 const homeUrl = process.env.PUBLIC_URL;
 
 const Home = () => {
   const navigate = useNavigate();
+  const user = useRecoilValue(userState);
 
-  const { isLoading, error, data: taskList } = useQuery('tasks', fetchTasks);
+  const {
+    isLoading,
+    error,
+    data: taskList,
+  } = useQuery(['tasks', user.id], () => fetchTasks(user.id));
 
   const onEditButtonClick = (task_id) => {
     navigate(`${homeUrl}/task_edit/${task_id}`);
