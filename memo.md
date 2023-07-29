@@ -43,5 +43,6 @@ CREATE TABLE tasks (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::TEXT, NOW()) NOT NULL,
     title VARCHAR(128),
     content TEXT
+    done BOOLEAN DEFAULT FALSE
 );
 ```

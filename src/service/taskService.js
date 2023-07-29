@@ -1,6 +1,7 @@
 import { supabase } from './supabaseClient';
 
 export const fetchTasks = async (user_id) => {
+  console.log('=== fetchTasks() ===');
   const { data, error } = await supabase
     .from('tasks')
     .select()
@@ -50,9 +51,7 @@ export const insertTask = async (task) => {
 };
 
 export const fetchTask = async (task_id) => {
-  if (!task_id) {
-    return null;
-  }
+  console.log('=== fetchTask() ===');
   const { data, error } = await supabase.from('tasks').select().eq('id', task_id).single();
   if (error) {
     throw new Error(error.message);

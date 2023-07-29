@@ -13,7 +13,9 @@ const Home = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
 
-  const tasksQuery = useQuery(['tasks', user.id], () => fetchTasks(user.id));
+  const tasksQuery = useQuery(['tasks', user.id], () => fetchTasks(user.id), {
+    staleTime: 1000 * 60 * 5,
+  });
 
   const onEditButtonClick = (task_id) => {
     navigate(`${homeUrl}/task_edit/${task_id}`);

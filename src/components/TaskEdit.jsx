@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { Stack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query';
 import { fetchTask, saveTask } from '../service/taskService';
 import { fetchTodos } from '../service/todoService';
 
@@ -27,19 +27,27 @@ const TaskEdit = () => {
   const [todoList, setTodoList] = useState([]);
   const { task_id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const homeUrl = process.env.PUBLIC_URL;
   console.log(task_id);
   console.log(user.email);
 
-  const taskQuery = useQuery(['task', task_id], () => fetchTask(task_id));
-  const todosQuery = useQuery(['todoList', task_id], () => fetchTodos(task_id));
+  const taskQuery = useQuery(['task', task_id], () => fetchTask(task_id), {
+    enabled: !!task_id, //task_idが有効な時のみ実行する
+    staleTime: 1000 * 60 * 5,
+  });
+  const todosQuery = useQuery(['todoList', task_id], () => fetchTodos(task_id), {
+    enabled: !!task_id,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const mutation = useMutation(saveTask, {
+  const taskMutation = useMutation(saveTask, {
     onSuccess: () => {
+      queryClient.invalidateQueries('task');
       navigate(`${homeUrl}/`);
     },
     onError: () => {
-      console.log('mutation error');
+      console.log('taskMutation error');
     },
   });
 
@@ -64,7 +72,7 @@ const TaskEdit = () => {
     event.preventDefault(); //ブラウザのデフォルトの動作を抑制する
 
     console.log(todoList);
-    mutation.mutate({ user_id, task_id, task: { title, content } });
+    taskMutation.mutate({ user_id, task_id, task: { title, content } });
   };
 
   const onAddTodoClick = () => {

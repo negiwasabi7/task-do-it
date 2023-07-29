@@ -1,9 +1,7 @@
 import { supabase } from './supabaseClient';
 
 export const fetchTodos = async (task_id) => {
-  if (!task_id) {
-    return [];
-  }
+  console.log('=== fetchTodos() ===');
   const { data, error } = await supabase
     .from('todos')
     .select()
