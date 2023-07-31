@@ -75,12 +75,19 @@ const TaskEdit = () => {
     taskMutation.mutate({ user_id, task_id, task: { title, content } });
   };
 
+  const maxTodoOrder = (todos) => {
+    if (todos.length < 1) {
+      return 0;
+    }
+    return Math.max(...todos.map((todo) => todo.todo_order));
+  };
+
   const onAddTodoClick = () => {
     const newTodo = {
       id: null,
       done: false,
       content: '',
-      todo_order: 1,
+      todo_order: maxTodoOrder(todoList) + 1,
     };
     const newTodos = [...todoList, newTodo];
     setTodoList(newTodos);

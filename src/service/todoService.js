@@ -12,3 +12,23 @@ export const fetchTodos = async (task_id) => {
   }
   return data;
 };
+
+export const saveTodos = async ({ task_id, todoList }) => {
+  for (let todo of todoList) {
+    const { id, ...data } = todo;
+    if (id) {
+      const { error } = await supabase
+        .from('todos')
+        .update({ ...data, updated_at: new Date().toISOString() })
+        .eq('id', id);
+      if (error) {
+        throw error;
+      }
+    } else {
+      const { error: insertError } = await supabase.from('todos').insert(data);
+      if (insertError) {
+        throw insertError;
+      }
+    }
+  }
+};
