@@ -30,16 +30,22 @@ export const saveTask = async ({ user_id, task_id, task }) => {
     result = await supabase
       .from('tasks')
       .update({ ...task, updated_at: new Date().toISOString() })
-      .eq('id', task_id);
+      .eq('id', task_id)
+      .select()
+      .single();
   } else {
-    result = await supabase.from('tasks').insert({ user_id, ...task });
+    result = await supabase
+      .from('tasks')
+      .insert({ user_id, ...task })
+      .select()
+      .single();
   }
 
   const { data, error } = result;
   if (error) {
     throw new Error(error.message);
   }
-  return data;
+  return data.id;
 };
 
 export const insertTask = async (task) => {

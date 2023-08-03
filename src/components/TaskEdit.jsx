@@ -17,7 +17,7 @@ import { Stack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query';
 import { fetchTask, saveTask } from '../service/taskService';
-import { fetchTodos } from '../service/todoService';
+import { fetchTodos, saveTodos } from '../service/todoService';
 
 const TaskEdit = () => {
   const user = useRecoilValue(userState);
@@ -42,12 +42,24 @@ const TaskEdit = () => {
   });
 
   const taskMutation = useMutation(saveTask, {
-    onSuccess: () => {
+    onSuccess: (task_id) => {
       queryClient.invalidateQueries('task');
-      navigate(`${homeUrl}/`);
+      queryClient.invalidateQueries('tasks');
+      if (todoList.length === 0) {
+        navigate(`${homeUrl}/`);
+      } else {
+        todoMutation.mutate({ task_id, todoList });
+      }
     },
     onError: () => {
       console.log('taskMutation error');
+    },
+  });
+
+  const todoMutation = useMutation(saveTodos, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('todoList');
+      navigate(`${homeUrl}/`);
     },
   });
 
