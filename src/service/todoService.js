@@ -17,18 +17,27 @@ export const saveTodos = async ({ task_id, todoList }) => {
   for (let todo of todoList) {
     const { id, ...data } = todo;
     const todo_data = { ...data, task_id };
-    if (id) {
-      const { error } = await supabase
-        .from('todos')
-        .update({ ...todo_data, updated_at: new Date().toISOString() })
-        .eq('id', id);
-      if (error) {
-        throw error;
+    if (!todo_data.deleted) {
+      if (id) {
+        const { error } = await supabase
+          .from('todos')
+          .update({ ...todo_data, updated_at: new Date().toISOString() })
+          .eq('id', id);
+        if (error) {
+          throw error;
+        }
+      } else {
+        const { error: insertError } = await supabase.from('todos').insert(todo_data);
+        if (insertError) {
+          throw insertError;
+        }
       }
     } else {
-      const { error: insertError } = await supabase.from('todos').insert(todo_data);
-      if (insertError) {
-        throw insertError;
+      if (id) {
+        const { error } = await supabase.from('todos').delete().eq('id', id);
+        if (error) {
+          throw error;
+        }
       }
     }
   }
