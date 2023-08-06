@@ -10,6 +10,7 @@ import {
   FormControl,
   FormLabel,
   HStack,
+  IconButton,
   Input,
   VStack,
 } from '@chakra-ui/react';
@@ -18,6 +19,7 @@ import { useEffect, useState } from 'react';
 import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query';
 import { fetchTask, saveTask } from '../service/taskService';
 import { fetchTodos, saveTodos } from '../service/todoService';
+import { DeleteIcon } from '@chakra-ui/icons';
 
 const TaskEdit = () => {
   const user = useRecoilValue(userState);
@@ -95,14 +97,24 @@ const TaskEdit = () => {
   };
 
   const onAddTodoClick = () => {
-    const newTodo = {
-      id: null,
-      done: false,
-      content: '',
-      todo_order: maxTodoOrder(todoList) + 1,
-    };
-    const newTodos = [...todoList, newTodo];
-    setTodoList(newTodos);
+    setTodoList((prevTodoList) => {
+      const newTodo = {
+        id: null,
+        done: false,
+        content: '',
+        todo_order: maxTodoOrder(prevTodoList) + 1,
+      };
+      return [...prevTodoList, newTodo];
+    });
+  };
+
+  const onDeleteTodoClick = (todoOrder) => {
+    setTodoList((prevTodoList) => {
+      const newTodoList = [...prevTodoList];
+      const todoIndex = todoList.findIndex((todo) => todo.todo_order === todoOrder);
+      newTodoList[todoIndex].deleted = true;
+      return newTodoList;
+    });
   };
 
   if (taskQuery.isLoading) {
@@ -118,6 +130,9 @@ const TaskEdit = () => {
     return <div>Error(todosQuery): {taskQuery.error}</div>;
   }
 
+  const filterdList = todoList.filter(function (todoList) {
+    return !todoList.deleted;
+  });
   return (
     <>
       <div>taskedit</div>
@@ -152,10 +167,10 @@ const TaskEdit = () => {
           </Center>
           <VStack>
             <Box>
-              {todoList.map((todo, index) => (
-                <HStack>
+              {filterdList.map((todo, index) => (
+                <HStack key={todo.todo_order}>
                   <Checkbox
-                    isChecked={todoList[index].done}
+                    isChecked={filterdList[index].done}
                     onChange={(event) => {
                       const newTodos = [...todoList];
                       newTodos[index].done = event.target.checked;
@@ -166,12 +181,16 @@ const TaskEdit = () => {
                     type="text"
                     width="30ch"
                     size="md"
-                    value={todoList[index].content}
+                    value={filterdList[index].content}
                     onChange={(event) => {
                       const newTodos = [...todoList];
                       newTodos[index].content = event.target.value;
                       setTodoList(newTodos);
                     }}
+                  />
+                  <IconButton
+                    icon={<DeleteIcon />}
+                    onClick={() => onDeleteTodoClick(filterdList[index].todo_order)}
                   />
                 </HStack>
               ))}
