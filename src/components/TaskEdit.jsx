@@ -6,12 +6,14 @@ import {
   Button,
   Center,
   Checkbox,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
   HStack,
   IconButton,
   Input,
+  Textarea,
   VStack,
 } from '@chakra-ui/react';
 import { Stack } from '@chakra-ui/react';
@@ -139,32 +141,38 @@ const TaskEdit = () => {
       <Flex minHeight="100vh" width="full" align="center" justifyContent="center">
         <form onSubmit={onSubmit}>
           <VStack>
-            <FormControl isRequired>
-              <FormLabel>タイトル</FormLabel>
-              <Input
-                type="text"
-                width="30ch"
-                size="md"
-                value={title}
-                onChange={(event) => setTitle(event.target.value)}
-              />
-            </FormControl>
-          </VStack>
-          <VStack>
-            <FormControl>
-              <FormLabel>内容</FormLabel>
-              <Input
-                type="text"
-                width="30ch"
-                size="md"
-                value={content}
-                onChange={(event) => setContent(event.target.value)}
-              />
-            </FormControl>
+            <Center>
+              <Box>
+                <FormControl isRequired>
+                  <FormLabel>タイトル</FormLabel>
+                  <Input
+                    type="text"
+                    width="30ch"
+                    size="md"
+                    value={title}
+                    onChange={(event) => setTitle(event.target.value)}
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel>内容</FormLabel>
+                  <Textarea
+                    type="text"
+                    width="30ch"
+                    size="md"
+                    value={content}
+                    onChange={(event) => setContent(event.target.value)}
+                  />
+                </FormControl>
+              </Box>
+            </Center>
           </VStack>
           <Center>
-            <Button onClick={onAddTodoClick}>TODOを追加</Button>
+            <Button onClick={onAddTodoClick} mt="3" mb="3">
+              TODOを追加
+            </Button>
           </Center>
+          <Divider mt="5" mb="5" borderColor="black" />
           <VStack>
             <Box>
               {filterdList.map((todo, index) => (
@@ -200,6 +208,7 @@ const TaskEdit = () => {
             <Button type="submit" colorScheme="blue" size="lg">
               保存
             </Button>
+            <Button onClick={() => navigate(`${homeUrl}/`)}>キャンセル</Button>
           </Center>
         </form>
       </Flex>
