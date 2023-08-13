@@ -41,7 +41,7 @@ const TaskEdit = () => {
     enabled: !!task_id, //task_idが有効な時のみ実行する
     staleTime: 1000 * 60 * 5,
   });
-  const todosQuery = useQuery(['todoList', task_id], () => fetchTodos(task_id), {
+  const todosQuery = useQuery(['todos', task_id], () => fetchTodos(task_id), {
     enabled: !!task_id,
     staleTime: 1000 * 60 * 5,
   });
@@ -63,7 +63,7 @@ const TaskEdit = () => {
 
   const todoMutation = useMutation(saveTodos, {
     onSuccess: () => {
-      queryClient.invalidateQueries('todoList');
+      queryClient.invalidateQueries('todos');
       navigate(`${homeUrl}/`);
     },
   });

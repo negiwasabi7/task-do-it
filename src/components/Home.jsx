@@ -22,6 +22,7 @@ const Home = () => {
     onSuccess: (task_id) => {
       queryClient.invalidateQueries('task');
       queryClient.invalidateQueries('tasks');
+      queryClient.invalidateQueries('todos');
     },
     onError: () => {
       console.log('taskMutation error');
