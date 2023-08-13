@@ -28,6 +28,7 @@ const TaskEdit = () => {
   const user_id = user.id;
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [deadline, setDeadline] = useState('');
   const [todoList, setTodoList] = useState([]);
   const { task_id } = useParams();
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ const TaskEdit = () => {
     event.preventDefault(); //ブラウザのデフォルトの動作を抑制する
 
     console.log(todoList);
-    taskMutation.mutate({ user_id, task_id, task: { title, content } });
+    taskMutation.mutate({ user_id, task_id, task: { title, content, deadline } });
   };
 
   const maxTodoOrder = (todos) => {
@@ -162,6 +163,15 @@ const TaskEdit = () => {
                     size="md"
                     value={content}
                     onChange={(event) => setContent(event.target.value)}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>期限</FormLabel>
+                  <Input
+                    type="date"
+                    size="md"
+                    value={deadline}
+                    onChange={(event) => setDeadline(event.target.value)}
                   />
                 </FormControl>
               </Box>

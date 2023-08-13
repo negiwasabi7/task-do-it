@@ -7,6 +7,9 @@ CREATE TABLE tasks (
     content TEXT
 );
 
+ALTER TABLE tasks ADD COLUMN deadline TIMESTAMP WITH TIME ZONE NOT NULL;
+ALTER TABLE tasks DROP COLUMN deadline;
+ALTER TABLE tasks ADD COLUMN deadline DATE DEFAULT NULL;
 
 INSERT INTO tasks (user_id, title, content) VALUES
 ('9bfd957f-ebd8-48b9-85c9-ee9bd00539a0', 'Title 1', 'Content 1'),

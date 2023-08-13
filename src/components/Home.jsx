@@ -45,6 +45,7 @@ const Home = () => {
   }
 
   const taskList = tasksQuery.data;
+  console.log(taskList);
   return (
     <>
       <VStack>

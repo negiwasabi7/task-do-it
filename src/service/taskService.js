@@ -6,7 +6,7 @@ export const fetchTasks = async (user_id) => {
     .from('tasks')
     .select()
     .eq('user_id', user_id)
-    .order('updated_at', { ascending: false });
+    .order('deadline', { ascending: true });
   if (error) {
     throw error;
   }
