@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import TaskItem from './TaskItem';
 import { useNavigate } from 'react-router-dom';
 import { deleteTask, fetchTasks } from '../service/taskService';
-import { Box, Button, Center, HStack, Stack, VStack } from '@chakra-ui/react';
+import { Box, Button, VStack } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/state';
 

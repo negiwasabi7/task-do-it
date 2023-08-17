@@ -16,9 +16,8 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
-import { Stack } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { QueryClient, useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { fetchTask, saveTask } from '../service/taskService';
 import { fetchTodos, saveTodos } from '../service/todoService';
 import { DeleteIcon } from '@chakra-ui/icons';
@@ -75,6 +74,7 @@ const TaskEdit = () => {
     if (task) {
       setTitle(task.title);
       setContent(task.content);
+      setDeadline(task.deadline);
     }
   }, [taskQuery.data]);
 
@@ -133,8 +133,8 @@ const TaskEdit = () => {
     return <div>Error(todosQuery): {taskQuery.error}</div>;
   }
 
-  const filterdList = todoList.filter(function (todoList) {
-    return !todoList.deleted;
+  const filterdList = todoList.filter(function (todo) {
+    return !todo.deleted;
   });
   return (
     <>
