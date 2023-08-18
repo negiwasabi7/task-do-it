@@ -13,7 +13,7 @@ import {
 import React, { useState } from 'react';
 import { supabase } from '../service/supabaseClient';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import { Link as ChakraLink, LinkProps } from '@chakra-ui/react';
+import { Link as ChakraLink } from '@chakra-ui/react';
 
 const homeUrl = process.env.PUBLIC_URL;
 
@@ -24,16 +24,12 @@ const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const signup = async (email, password) => {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: email,
       password: password,
     });
     if (error) {
-      console.log('===ERROR===');
-      console.log(error);
-    } else {
-      console.log('===SIGNUP OK===');
-      console.log(data);
+      console.error(error);
     }
   };
   const onSubmit = (event) => {
@@ -44,7 +40,6 @@ const SignUp = () => {
     }
     setErrorMessage('');
     signup(email, password1);
-    console.log(`email=${email} password1=${password1} password2=${password2}`);
   };
 
   return (

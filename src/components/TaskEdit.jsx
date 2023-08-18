@@ -33,8 +33,6 @@ const TaskEdit = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const homeUrl = process.env.PUBLIC_URL;
-  console.log(task_id);
-  console.log(user.email);
 
   const taskQuery = useQuery(['task', task_id], () => fetchTask(task_id), {
     enabled: !!task_id, //task_idが有効な時のみ実行する
@@ -49,6 +47,7 @@ const TaskEdit = () => {
     onSuccess: (task_id) => {
       queryClient.invalidateQueries('task');
       queryClient.invalidateQueries('tasks');
+      queryClient.invalidateQueries('taskCount');
       if (todoList.length === 0) {
         navigate(`${homeUrl}/`);
       } else {
@@ -56,7 +55,7 @@ const TaskEdit = () => {
       }
     },
     onError: () => {
-      console.log('taskMutation error');
+      console.error('taskMutation error');
     },
   });
 
@@ -69,8 +68,7 @@ const TaskEdit = () => {
 
   useEffect(() => {
     const task = taskQuery.data;
-    console.log('==== useEffect ===');
-    console.log(task);
+
     if (task) {
       setTitle(task.title);
       setContent(task.content);
@@ -88,7 +86,6 @@ const TaskEdit = () => {
   const onSubmit = (event) => {
     event.preventDefault(); //ブラウザのデフォルトの動作を抑制する
 
-    console.log(todoList);
     taskMutation.mutate({ user_id, task_id, task: { title, content, deadline } });
   };
 

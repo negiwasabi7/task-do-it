@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { userState } from '../store/state';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import { Link as ChakraLink, LinkProps } from '@chakra-ui/react';
+import { Link as ChakraLink } from '@chakra-ui/react';
 
 const homeUrl = process.env.PUBLIC_URL;
 
@@ -33,12 +33,9 @@ const Login = () => {
       password: password,
     });
     if (error) {
-      console.log('===ERROR===');
-      console.log(error);
+      console.error(error);
       setErrorMessage(error.message);
     } else {
-      console.log('===SIGNIN OK===');
-      console.log(data);
       setUser(data.user);
       navigate(`${homeUrl}/`);
     }
@@ -46,7 +43,6 @@ const Login = () => {
   const onSubmit = (event) => {
     event.preventDefault(); //ブラウザのデフォルトの動作を抑制する
     signin(email, password1);
-    console.log(`email=${email} password1=${password1} `);
   };
 
   return (

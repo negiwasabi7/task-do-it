@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import TaskItem from './TaskItem';
 import { useNavigate } from 'react-router-dom';
-import { deleteTask, fetchTasks } from '../service/taskService';
-import { Box, Button, VStack } from '@chakra-ui/react';
+import { countTasks, deleteTask, fetchTasks } from '../service/taskService';
+import { Box, Button, HStack, VStack } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../store/state';
 
@@ -13,19 +13,30 @@ const Home = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
   const queryClient = useQueryClient();
+  const [pageIndex, setPageIndex] = useState(0);
 
-  const tasksQuery = useQuery(['tasks', user.id], () => fetchTasks(user.id), {
+  const tasksQuery = useQuery(['tasks', user.id, pageIndex], () => fetchTasks(user.id, pageIndex), {
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const taskCountQuery = useQuery(['taskCount', user.id], () => countTasks(user.id), {
+    enabled: !!user.id,
     staleTime: 1000 * 60 * 5,
   });
 
   const deleteTaskMutation = useMutation(deleteTask, {
     onSuccess: (task_id) => {
+      //1件のみ表示しているときにそのデータを削除した時はpageIndexを1つ戻す
+      if (tasksQuery.data.length === 1 && pageIndex > 0) {
+        setPageIndex((pageIndex) => pageIndex - 1);
+      }
       queryClient.invalidateQueries('task');
       queryClient.invalidateQueries('tasks');
       queryClient.invalidateQueries('todos');
+      queryClient.invalidateQueries('taskCount');
     },
     onError: () => {
-      console.log('taskMutation error');
+      console.error('taskMutation error');
     },
   });
 
@@ -37,7 +48,7 @@ const Home = () => {
     deleteTaskMutation.mutate(task_id);
   };
 
-  if (tasksQuery.isLoading) {
+  if (tasksQuery.isLoading || taskCountQuery.isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -46,7 +57,7 @@ const Home = () => {
   }
 
   const taskList = tasksQuery.data;
-  console.log(taskList);
+  const numberOfTasks = taskCountQuery.data;
   return (
     <>
       <VStack>
@@ -61,6 +72,20 @@ const Home = () => {
             />
           ))}
         </Box>
+        <HStack>
+          <Button
+            isDisabled={pageIndex === 0}
+            onClick={() => setPageIndex((pageIndex) => pageIndex - 1)}
+          >
+            前ページ
+          </Button>
+          <Button
+            isDisabled={pageIndex * 10 + taskList.length >= numberOfTasks}
+            onClick={() => setPageIndex((pageIndex) => pageIndex + 1)}
+          >
+            次ページ
+          </Button>
+        </HStack>
       </VStack>
     </>
   );
